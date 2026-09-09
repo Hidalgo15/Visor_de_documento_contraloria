@@ -1,9 +1,12 @@
-C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.exe
-C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.dll
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\appsettings.json
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.staticwebassets.runtime.json
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.staticwebassets.endpoints.json
+C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.exe
+C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.deps.json
+C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.runtimeconfig.json
+C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.dll
+C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.pdb
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\rpswa.dswa.cache.json
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.AssemblyInfoInputs.cache
@@ -12,6 +15,7 @@ C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDo
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.RazorAssemblyInfo.cache
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.RazorAssemblyInfo.cs
+C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.sourcelink.json
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -25,8 +29,5 @@ C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDo
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.dll
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\refint\VisorDeDocumentos.dll
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.pdb
-C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.deps.json
-C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.runtimeconfig.json
-C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\VisorDeDocumentos.pdb
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.genruntimeconfig.cache
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\ref\VisorDeDocumentos.dll
