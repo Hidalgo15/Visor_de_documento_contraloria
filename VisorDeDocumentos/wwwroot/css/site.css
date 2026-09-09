@@ -1,0 +1,35 @@
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+:root {
+    --cgr-azul-medianoche: #003870;
+    --cgr-azul-claro-bg: #eef4f9;
+}
+
+body {
+    background-color: var(--cgr-azul-claro-bg);
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Navbar en azul completo */
+.navbar-cgr {
+    background-color: var(--cgr-azul-medianoche) !important;
+    
+}
+
+/* Sombra y tarjetas */
+.card-consulta {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}

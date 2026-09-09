@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Consulta";
+    string? pdfUrl = ViewBag.PdfUrl as string;
+    string? noDocumento = ViewBag.NoDocumento as string;
+    string? error = ViewBag.Error as string;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-12">
+        <div class="card card-consulta bg-white p-4">
+
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="alert alert-warning border-0 text-center py-3" role="alert" style="background-color: #fcf8e3; color: #8a6d3b;">
+                    @error
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info border-0 d-flex justify-content-between align-items-center mb-3" style="background-color: #d9edf7; color: #31708f;">
+                    <div>
+                        <span class="fw-bold">Documento Consultado:</span> @noDocumento
+                    </div>
+                    <span class="badge" style="background-color: #003870;">Documento Oficial</span>
+                </div>
+
+                <div class="border rounded bg-secondary overflow-hidden" style="height: 75vh;">
+                    <iframe src="@pdfUrl" width="100%" height="100%" style="border: none;">
+                        Su navegador no soporta la visualización de documentos en formato PDF.
+                    </iframe>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
