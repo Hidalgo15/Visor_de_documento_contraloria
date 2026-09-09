@@ -1,7 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Consulta";
-    string? pdfUrl = ViewBag.PdfUrl as string;
-    string? noDocumento = ViewBag.NoDocumento as string;
+
+    string rawPdfUrl = ViewBag.PdfUrl as string ?? "~/pdf/Capitulo 5 Entregable.pdf";
+    string pdfUrlResolved = Url.Content(rawPdfUrl);
+
+    string noDocumento = ViewBag.NoDocumento as string ?? "CGR-2026-001";
     string? error = ViewBag.Error as string;
 }
 
@@ -24,8 +27,9 @@
                     <span class="badge" style="background-color: #003870;">Documento Oficial</span>
                 </div>
 
+                <!-- Visor PDF embebido -->
                 <div class="border rounded bg-secondary overflow-hidden" style="height: 75vh;">
-                    <iframe src="@pdfUrl" width="100%" height="100%" style="border: none;">
+                    <iframe src="@pdfUrlResolved" width="100%" height="100%" style="border: none;">
                         Su navegador no soporta la visualización de documentos en formato PDF.
                     </iframe>
                 </div>
