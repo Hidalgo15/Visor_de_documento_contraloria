@@ -7,20 +7,32 @@ namespace VisorDeDocumentos.Controllers.Documento
         [HttpGet]
         public IActionResult Index(string? nodocumento)
         {
+            // Si viene vacío en esta prueba, asignamos uno por defecto para visualizar el PDF
             if (string.IsNullOrEmpty(nodocumento))
             {
-                ViewBag.Error = "No se ha proporcionado un número de documento válido.";
-                return View();
+                nodocumento = "DOC-PRUEBA-001";
             }
 
-            // Simulación: En el futuro aquí harás el Fetch a la API con nodocumento
-            // Por el momento asignamos la ruta del PDF directamente para visualización
-            string rutaPdf = $"/pdf/{nodocumento}.pdf";
-
+            // Ruta hacia la carpeta wwwroot/pdf/
             ViewBag.NoDocumento = nodocumento;
-            ViewBag.PdfUrl = rutaPdf;
+            ViewBag.PdfUrl = "~/pdf/Capitulo 5 Entregable.pdf";
 
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult VerPdfLocal()
+        {
+            // Escribe aquí la ruta exacta de tu computadora
+            string rutaAbsoluta = @"C:\Ruta\De\Tu\Archivo\documento.pdf";
+
+            if (!System.IO.File.Exists(rutaAbsoluta))
+            {
+                return NotFound("El archivo no existe en la ruta especificada.");
+            }
+
+            var stream = new FileStream(rutaAbsoluta, FileMode.Open, FileAccess.Read);
+            return File(stream, "application/pdf");
         }
     }
 }
