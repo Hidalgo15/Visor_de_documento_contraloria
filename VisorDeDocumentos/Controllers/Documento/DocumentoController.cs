@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.IO;
 using VisorDeDocumentos.Base;
 
 namespace VisorDeDocumentos.Controllers.Documento
@@ -17,13 +18,11 @@ namespace VisorDeDocumentos.Controllers.Documento
         [HttpGet]
         public IActionResult Index(string? nodocumento)
         {
-            // Si viene vacío en esta prueba, asignamos uno por defecto para visualizar el PDF
             if (string.IsNullOrEmpty(nodocumento))
             {
                 nodocumento = "DOC-PRUEBA-001";
             }
 
-            // Ruta hacia la carpeta wwwroot/pdf/
             ViewBag.NoDocumento = nodocumento;
             ViewBag.PdfUrl = "~/pdf/Capitulo 5 Entregable.pdf";
 
@@ -33,7 +32,6 @@ namespace VisorDeDocumentos.Controllers.Documento
         [HttpGet]
         public IActionResult VerPdfLocal()
         {
-            // Escribe aquí la ruta exacta de tu computadora
             string rutaAbsoluta = @"C:\Ruta\De\Tu\Archivo\documento.pdf";
 
             if (!System.IO.File.Exists(rutaAbsoluta))
@@ -55,7 +53,6 @@ namespace VisorDeDocumentos.Controllers.Documento
                 using (SqlCommand cmd = new SqlCommand("[dbo].[usp_buscar_documentos_tramite_compras]", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
                     cmd.Parameters.AddWithValue("@nombre_mia", nombreTb);
                     cmd.Parameters.AddWithValue("@codigo", codigo);
 
@@ -76,10 +73,10 @@ namespace VisorDeDocumentos.Controllers.Documento
 
             if (archivoBytes == null || archivoBytes.Length == 0)
             {
-                return NotFound("No se encontró el archivo comprimido.");
+                return NotFound("No se encontró el archivo comprimido en la BD.");
             }
 
-            // Descomprimir y mostrar el PDF
+            // Descomprimir usando ZLIBSIGOB
             string rutaPdf = DescomprimirArchivo(archivoBytes, codigo);
 
             if (string.IsNullOrEmpty(rutaPdf) || !System.IO.File.Exists(rutaPdf))
@@ -94,7 +91,7 @@ namespace VisorDeDocumentos.Controllers.Documento
             }
             finally
             {
-                // Limpiar archivo temporal
+                // Limpiar archivo temporal descomprimido
                 if (System.IO.File.Exists(rutaPdf))
                 {
                     System.IO.File.Delete(rutaPdf);
@@ -102,28 +99,22 @@ namespace VisorDeDocumentos.Controllers.Documento
             }
         }
 
-        /// <summary>
-        /// Descomprime el archivo ZLIB en memoria y devuelve la ruta del PDF descomprimido
-        /// </summary>
         private string DescomprimirArchivo(byte[] archivoComprimido, int codigo)
         {
-            // Crear carpeta temporal
             string tempDir = Path.Combine(Path.GetTempPath(), "VisorDocumentos");
             if (!Directory.Exists(tempDir))
             {
                 Directory.CreateDirectory(tempDir);
             }
 
-            // Guardar archivo comprimido temporalmente
             string rutaComprimida = Path.Combine(tempDir, $"Documento_{codigo}.zlib");
             System.IO.File.WriteAllBytes(rutaComprimida, archivoComprimido);
 
             try
             {
-                // Descomprimir usando ZLIBSIGOB
+                // Llamada a tu clase ZLIBSIGOB
                 string rutaDescomprimida = ZLIBSIGOB.DescomprimirArchivoZLIB(rutaComprimida);
 
-                // Limpiar archivo comprimido temporal
                 if (System.IO.File.Exists(rutaComprimida))
                 {
                     System.IO.File.Delete(rutaComprimida);
@@ -133,7 +124,6 @@ namespace VisorDeDocumentos.Controllers.Documento
             }
             catch
             {
-                // En caso de error, limpiar
                 if (System.IO.File.Exists(rutaComprimida))
                 {
                     System.IO.File.Delete(rutaComprimida);
@@ -141,8 +131,5 @@ namespace VisorDeDocumentos.Controllers.Documento
                 throw;
             }
         }
-
-        
-
     }
 }
