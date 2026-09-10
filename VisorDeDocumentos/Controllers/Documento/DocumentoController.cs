@@ -1,71 +1,60 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 using VisorDeDocumentos.Base;
 
 namespace VisorDeDocumentos.Controllers.Documento
 {
     public class DocumentoController : Controller
     {
-        private const string UrlBase = "https://sistema.com/documentos/";
+        private readonly string _connectionString;
 
-        private static readonly HttpClient HttpClient = new HttpClient();
-
-        [HttpGet]
-        public IActionResult Index(int? nodocumento)
+        public DocumentoController(IConfiguration configuration)
         {
-            ViewBag.NoDocumento = nodocumento;
-
-            if (nodocumento.HasValue)
-            {
-                ViewBag.PdfUrl = Url.Action(
-                    "Pdf",
-                    "Documento",
-                    new { codigo = nodocumento.Value }
-                );
-            }
-
-            return View();
+            _connectionString = configuration.GetConnectionString("ConexionSIGOB");
         }
 
         [HttpGet]
-        public async Task<IActionResult> Pdf(int codigo)
+        public IActionResult DescargarDocumento(string nombreTb = "cbs01", int codigo = 1645)
         {
-            try
+            byte[] archivoBytes = null;
+            string nombreArchivo = $"Documento_{codigo}.zip";
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string url = $"{UrlBase}{codigo}";
+                using (SqlCommand cmd = new SqlCommand("[dbo].[usp_buscar_documentos_tramite_compras]", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                using var httpClient = new HttpClient();
+                    cmd.Parameters.AddWithValue("@nombre_mia", nombreTb);
+                    cmd.Parameters.AddWithValue("@codigo", codigo);
 
-                byte[] archivoComprimido =
-                    await HttpClient.GetByteArrayAsync(url);
+                    conn.Open();
 
-                // descompresion del archivo comprimido usando zlib
-
-                byte[] pdf = DescomprimirArchivo(archivoComprimido);
-
-                return File(pdf, "application/pdf");
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            if (reader[0] != DBNull.Value)
+                            {
+                                archivoBytes = (byte[])reader[0];
+                            }
+                        }
+                    }
+                }
             }
-            catch (HttpRequestException)
+
+            if (archivoBytes == null || archivoBytes.Length == 0)
             {
-                return NotFound(
-                    "No fue posible obtener el documento."
-                );
+                return NotFound("No se encontrÃ³ el archivo comprimido.");
             }
-            catch (Exception)
-            {
-                return StatusCode(
-                    500,
-                    "Ocurrió un error procesando el documento."
-                );
-            }
+
+            return File(archivoBytes, "application/zip", nombreArchivo);
         }
 
-        private byte[] DescomprimirArchivo(byte[] archivoComprimido)
-        {
-            // Aqui va zlib.
-
-            throw new NotImplementedException();
-        }
-
+        //--------------------------------------------------------------
+        //Ejemplo de descompresion de archivo zlib
         private void unificadomentostre(int codigo)
         {
             string tempPath = @"W:\";
