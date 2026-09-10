@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj": {}
+    "D:\\Isaac\\Documents\\Trabajos Contraloria\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj": {
+    "D:\\Isaac\\Documents\\Trabajos Contraloria\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj",
+        "projectUniqueName": "D:\\Isaac\\Documents\\Trabajos Contraloria\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj",
         "projectName": "VisorDeDocumentos",
-        "projectPath": "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj",
-        "packagesPath": "C:\\Users\\pdesarrollo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\obj\\",
+        "projectPath": "D:\\Isaac\\Documents\\Trabajos Contraloria\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj",
+        "packagesPath": "C:\\Users\\Isaac\\.nuget\\packages\\",
+        "outputPath": "D:\\Isaac\\Documents\\Trabajos Contraloria\\Visor_de_documento_contraloria\\VisorDeDocumentos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\pdesarrollo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Isaac\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,12 +26,10 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -46,11 +44,10 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "imports": [
             "net461",
@@ -71,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.314/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
