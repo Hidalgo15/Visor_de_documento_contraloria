@@ -1,6 +1,5 @@
-﻿namespace VisorDeDocumentos.Service
+﻿namespace VisorDeDocumentos.Service;
+
+public class DocumentoService
 {
-    public class DocumentoService
-    {
-    }
 }
