@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using VisorDeDocumentos.Service;
+using Microsoft.AspNetCore.Mvc;
+using VisorDeDocumentos.Base;
 
 namespace VisorDeDocumentos.Controllers.Documento
 {
@@ -54,7 +54,7 @@ namespace VisorDeDocumentos.Controllers.Documento
             {
                 return StatusCode(
                     500,
-                    "Ocurrió un error procesando el documento."
+                    "Ocurri� un error procesando el documento."
                 );
             }
         }

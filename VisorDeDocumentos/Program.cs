@@ -1,6 +1,3 @@
-using VisorDeDocumentos.Infrastructure;
-using VisorDeDocumentos.Service;
-
 namespace VisorDeDocumentos
 {
     public class Program
@@ -10,19 +7,6 @@ namespace VisorDeDocumentos
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
-
-            builder.Services.AddHttpClient<DocumentoApiClient>((serviceProvider, client) =>
-            {
-                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-
-                var baseUrl = configuration["DocumentoApi:BaseUrl"];
-
-                client.BaseAddress = new Uri(baseUrl!);
-
-                client.Timeout = TimeSpan.FromSeconds(60);
-            });
-
-            builder.Services.AddScoped<IDocumentoService, DocumentoService>();
 
             var app = builder.Build();
 

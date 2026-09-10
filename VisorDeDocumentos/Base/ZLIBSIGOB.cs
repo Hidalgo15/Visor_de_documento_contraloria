@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace VisorDeDocumentos.Service
+namespace VisorDeDocumentos.Base
 {
     public static class ZLIBSIGOB
     {

@@ -15,26 +15,6 @@
     <div class="col-lg-12">
         <div class="card card-consulta bg-white p-4">
 
-            <!-- Formulario de búsqueda -->
-            <div class="mb-4">
-                <form method="post">
-                    @Html.AntiForgeryToken()
-
-                    <div class="mb-3">
-                        <label for="codigo" class="form-label fw-bold">Código del Documento</label>
-                        <div class="input-group">
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="codigo" 
-                                   name="Codigo" 
-                                   placeholder="Ingrese el código del documento (ej: 202608)" 
-                                   value="@Model?.Codigo" 
-                                   required>
-                            <button class="btn btn-primary" type="submit">Consultar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
 
             @if (!string.IsNullOrEmpty(error))
             {
