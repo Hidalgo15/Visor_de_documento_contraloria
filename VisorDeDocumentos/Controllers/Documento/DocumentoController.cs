@@ -16,7 +16,8 @@ namespace VisorDeDocumentos.Controllers.Documento
         }
 
         [HttpGet]
-        public IActionResult Index(string? nodocumento)
+        
+        public IActionResult Index(string? nodocumento, string nombreTb = "cbs01", int codigo = 1645)
         {
             if (string.IsNullOrEmpty(nodocumento))
             {
@@ -24,7 +25,9 @@ namespace VisorDeDocumentos.Controllers.Documento
             }
 
             ViewBag.NoDocumento = nodocumento;
-            ViewBag.PdfUrl = "~/pdf/Capitulo 5 Entregable.pdf";
+
+            // Apuntamos ViewBag.PdfUrl hacia el endpoint que obtiene, descomprime y retorna el PDF de la BD
+            ViewBag.PdfUrl = Url.Action("DescargarDocumento", "Documento", new { nombreTb = nombreTb, codigo = codigo });
 
             return View();
         }
