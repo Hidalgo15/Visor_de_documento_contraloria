@@ -12,8 +12,6 @@ namespace VisorDeDocumentos.Base
 
         /// </summary>
 
-        [DllImport("ZLibSIGOB32", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-
         private static extern void zlibComprimirArchivo(string Archivo, string Directorio, StringBuilder Resultado);
 
         [DllImport("ZLibSIGOB32", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]

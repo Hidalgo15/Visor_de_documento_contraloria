@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using System;
 using System.Data;
-using System.IO;
 using VisorDeDocumentos.Base;
 
 namespace VisorDeDocumentos.Controllers.Documento
@@ -68,9 +65,9 @@ namespace VisorDeDocumentos.Controllers.Documento
                     {
                         if (reader.Read())
                         {
-                            if (reader[0] != DBNull.Value)
+                            if (reader["document"] != DBNull.Value)
                             {
-                                archivoBytes = (byte[])reader[0];
+                                archivoBytes = (byte[])reader["document"];
                             }
                         }
                     }
@@ -144,5 +141,8 @@ namespace VisorDeDocumentos.Controllers.Documento
                 throw;
             }
         }
+
+        
+
     }
 }
