@@ -1,99 +1,148 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Data;
+using System.IO;
 using VisorDeDocumentos.Base;
 
 namespace VisorDeDocumentos.Controllers.Documento
 {
     public class DocumentoController : Controller
     {
-        private const string UrlBase = "https://sistema.com/documentos/";
+        private readonly string _connectionString;
 
-        private static readonly HttpClient HttpClient = new HttpClient();
+        public DocumentoController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("ConexionSIGOB");
+        }
 
         [HttpGet]
-        public IActionResult Index(int? nodocumento)
+        public IActionResult Index(string? nodocumento)
         {
-            ViewBag.NoDocumento = nodocumento;
-
-            if (nodocumento.HasValue)
+            // Si viene vacío en esta prueba, asignamos uno por defecto para visualizar el PDF
+            if (string.IsNullOrEmpty(nodocumento))
             {
-                ViewBag.PdfUrl = Url.Action(
-                    "Pdf",
-                    "Documento",
-                    new { codigo = nodocumento.Value }
-                );
+                nodocumento = "DOC-PRUEBA-001";
             }
+
+            // Ruta hacia la carpeta wwwroot/pdf/
+            ViewBag.NoDocumento = nodocumento;
+            ViewBag.PdfUrl = "~/pdf/Capitulo 5 Entregable.pdf";
 
             return View();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Pdf(int codigo)
+        public IActionResult VerPdfLocal()
         {
+            // Escribe aquí la ruta exacta de tu computadora
+            string rutaAbsoluta = @"C:\Ruta\De\Tu\Archivo\documento.pdf";
+
+            if (!System.IO.File.Exists(rutaAbsoluta))
+            {
+                return NotFound("El archivo no existe en la ruta especificada.");
+            }
+
+            var stream = new FileStream(rutaAbsoluta, FileMode.Open, FileAccess.Read);
+            return File(stream, "application/pdf");
+        }
+
+        [HttpGet]
+        public IActionResult DescargarDocumento(string nombreTb = "cbs01", int codigo = 1645)
+        {
+            byte[] archivoBytes = null;
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("[dbo].[usp_buscar_documentos_tramite_compras]", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@nombre_mia", nombreTb);
+                    cmd.Parameters.AddWithValue("@codigo", codigo);
+
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            if (reader[0] != DBNull.Value)
+                            {
+                                archivoBytes = (byte[])reader[0];
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (archivoBytes == null || archivoBytes.Length == 0)
+            {
+                return NotFound("No se encontró el archivo comprimido.");
+            }
+
+            // Descomprimir y mostrar el PDF
+            string rutaPdf = DescomprimirArchivo(archivoBytes, codigo);
+
+            if (string.IsNullOrEmpty(rutaPdf) || !System.IO.File.Exists(rutaPdf))
+            {
+                return NotFound("No se pudo descomprimir el archivo.");
+            }
+
             try
             {
-                string url = $"{UrlBase}{codigo}";
-
-                using var httpClient = new HttpClient();
-
-                byte[] archivoComprimido =
-                    await HttpClient.GetByteArrayAsync(url);
-
-                // descompresion del archivo comprimido usando zlib
-
-                byte[] pdf = DescomprimirArchivo(archivoComprimido);
-
-                return File(pdf, "application/pdf");
+                byte[] pdfBytes = System.IO.File.ReadAllBytes(rutaPdf);
+                return File(pdfBytes, "application/pdf");
             }
-            catch (HttpRequestException)
+            finally
             {
-                return NotFound(
-                    "No fue posible obtener el documento."
-                );
+                // Limpiar archivo temporal
+                if (System.IO.File.Exists(rutaPdf))
+                {
+                    System.IO.File.Delete(rutaPdf);
+                }
             }
-            catch (Exception)
+        }
+
+        /// <summary>
+        /// Descomprime el archivo ZLIB en memoria y devuelve la ruta del PDF descomprimido
+        /// </summary>
+        private string DescomprimirArchivo(byte[] archivoComprimido, int codigo)
+        {
+            // Crear carpeta temporal
+            string tempDir = Path.Combine(Path.GetTempPath(), "VisorDocumentos");
+            if (!Directory.Exists(tempDir))
             {
-                return StatusCode(
-                    500,
-                    "Ocurri� un error procesando el documento."
-                );
+                Directory.CreateDirectory(tempDir);
+            }
+
+            // Guardar archivo comprimido temporalmente
+            string rutaComprimida = Path.Combine(tempDir, $"Documento_{codigo}.zlib");
+            System.IO.File.WriteAllBytes(rutaComprimida, archivoComprimido);
+
+            try
+            {
+                // Descomprimir usando ZLIBSIGOB
+                string rutaDescomprimida = ZLIBSIGOB.DescomprimirArchivoZLIB(rutaComprimida);
+
+                // Limpiar archivo comprimido temporal
+                if (System.IO.File.Exists(rutaComprimida))
+                {
+                    System.IO.File.Delete(rutaComprimida);
+                }
+
+                return rutaDescomprimida;
+            }
+            catch
+            {
+                // En caso de error, limpiar
+                if (System.IO.File.Exists(rutaComprimida))
+                {
+                    System.IO.File.Delete(rutaComprimida);
+                }
+                throw;
             }
         }
-
-        private byte[] DescomprimirArchivo(byte[] archivoComprimido)
-        {
-            // Aqui va zlib.
-
-            throw new NotImplementedException();
-        }
-
-        private void unificadomentostre(int codigo)
-        {
-            string tempPath = @"W:\";
-
-            //var docGrouped = db_CGR.T_DOCUMENTOS_TRE.Take(3).ToList();
-            //string[] docGrouped = db_CGR.Database.SqlQuery<string>("SELECT codigo_tramite FROM T_DOCUMENTOS_TRE GROUP BY codigo_tramite order by codigo_tramite ").ToArray();
-            //var docGrouped = db_CGR.T_DOCUMENTOS_TRE.Take(10).GroupBy(a => a.numero_libramiento).ToList();
-            //var query = people.DistinctBy(p => p.Id);
-            //foreach (var noLibramiento in docGrouped)
-            //{
-            //string currentFolder = tempPath;
-            //string ruta = docGroup.Key;
-            string currentFolder = tempPath + 56565;
-            //var nol = db_CGR.T_DOCUMENTOS_TRE.Take(15).Where(c => c.codigo_caso == d.codigo_caso).ToList();
-            System.IO.Directory.CreateDirectory(currentFolder);
-
-            //var dotre = db_CGR.v_documentos_tre.Where(c => c.codigo_tramite == noLibramiento).ToList();
-            int conteo = 1;
-
-            string noDoc = "nombre";
-            string docName = String.Format("{0}\\{1}", currentFolder, noDoc.ToString());
-            System.IO.File.WriteAllBytes(docName + ".zlib", System.IO.File.ReadAllBytes(noDoc));
-            var Archivodescomprimido = ZLIBSIGOB.DescomprimirArchivoZLIB(docName + ".zlib");
-            System.IO.File.Move(Archivodescomprimido, docName + "-" + conteo.ToString() + new System.IO.FileInfo(Archivodescomprimido).Extension); //
-            System.IO.File.Delete(docName + ".zlib");
-            conteo++;
-
-        }
-
     }
 }
