@@ -1,3 +1,6 @@
+using VisorDeDocumentos.Infrastructure;
+using VisorDeDocumentos.Service;
+
 namespace VisorDeDocumentos
 {
     public class Program
@@ -6,16 +9,26 @@ namespace VisorDeDocumentos
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddHttpClient<DocumentoApiClient>((serviceProvider, client) =>
+            {
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
+                var baseUrl = configuration["DocumentoApi:BaseUrl"];
+
+                client.BaseAddress = new Uri(baseUrl!);
+
+                client.Timeout = TimeSpan.FromSeconds(60);
+            });
+
+            builder.Services.AddScoped<IDocumentoService, DocumentoService>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Documento/Index");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

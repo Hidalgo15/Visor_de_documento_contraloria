@@ -1,38 +1,99 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using VisorDeDocumentos.Service;
 
 namespace VisorDeDocumentos.Controllers.Documento
 {
     public class DocumentoController : Controller
     {
-        [HttpGet]
-        public IActionResult Index(string? nodocumento)
-        {
-            // Si viene vacío en esta prueba, asignamos uno por defecto para visualizar el PDF
-            if (string.IsNullOrEmpty(nodocumento))
-            {
-                nodocumento = "DOC-PRUEBA-001";
-            }
+        private const string UrlBase = "https://sistema.com/documentos/";
 
-            // Ruta hacia la carpeta wwwroot/pdf/
+        private static readonly HttpClient HttpClient = new HttpClient();
+
+        [HttpGet]
+        public IActionResult Index(int? nodocumento)
+        {
             ViewBag.NoDocumento = nodocumento;
-            ViewBag.PdfUrl = "~/pdf/Capitulo 5 Entregable.pdf";
+
+            if (nodocumento.HasValue)
+            {
+                ViewBag.PdfUrl = Url.Action(
+                    "Pdf",
+                    "Documento",
+                    new { codigo = nodocumento.Value }
+                );
+            }
 
             return View();
         }
 
         [HttpGet]
-        public IActionResult VerPdfLocal()
+        public async Task<IActionResult> Pdf(int codigo)
         {
-            // Escribe aquí la ruta exacta de tu computadora
-            string rutaAbsoluta = @"C:\Ruta\De\Tu\Archivo\documento.pdf";
-
-            if (!System.IO.File.Exists(rutaAbsoluta))
+            try
             {
-                return NotFound("El archivo no existe en la ruta especificada.");
-            }
+                string url = $"{UrlBase}{codigo}";
 
-            var stream = new FileStream(rutaAbsoluta, FileMode.Open, FileAccess.Read);
-            return File(stream, "application/pdf");
+                using var httpClient = new HttpClient();
+
+                byte[] archivoComprimido =
+                    await HttpClient.GetByteArrayAsync(url);
+
+                // descompresion del archivo comprimido usando zlib
+
+                byte[] pdf = DescomprimirArchivo(archivoComprimido);
+
+                return File(pdf, "application/pdf");
+            }
+            catch (HttpRequestException)
+            {
+                return NotFound(
+                    "No fue posible obtener el documento."
+                );
+            }
+            catch (Exception)
+            {
+                return StatusCode(
+                    500,
+                    "Ocurrió un error procesando el documento."
+                );
+            }
         }
+
+        private byte[] DescomprimirArchivo(byte[] archivoComprimido)
+        {
+            // Aqui va zlib.
+
+            throw new NotImplementedException();
+        }
+
+        private void unificadomentostre(int codigo)
+        {
+            string tempPath = @"W:\";
+
+            //var docGrouped = db_CGR.T_DOCUMENTOS_TRE.Take(3).ToList();
+            //string[] docGrouped = db_CGR.Database.SqlQuery<string>("SELECT codigo_tramite FROM T_DOCUMENTOS_TRE GROUP BY codigo_tramite order by codigo_tramite ").ToArray();
+            //var docGrouped = db_CGR.T_DOCUMENTOS_TRE.Take(10).GroupBy(a => a.numero_libramiento).ToList();
+            //var query = people.DistinctBy(p => p.Id);
+            //foreach (var noLibramiento in docGrouped)
+            //{
+            //string currentFolder = tempPath;
+            //string ruta = docGroup.Key;
+            string currentFolder = tempPath + 56565;
+            //var nol = db_CGR.T_DOCUMENTOS_TRE.Take(15).Where(c => c.codigo_caso == d.codigo_caso).ToList();
+            System.IO.Directory.CreateDirectory(currentFolder);
+
+            //var dotre = db_CGR.v_documentos_tre.Where(c => c.codigo_tramite == noLibramiento).ToList();
+            int conteo = 1;
+
+            string noDoc = "nombre";
+            string docName = String.Format("{0}\\{1}", currentFolder, noDoc.ToString());
+            System.IO.File.WriteAllBytes(docName + ".zlib", System.IO.File.ReadAllBytes(noDoc));
+            var Archivodescomprimido = ZLIBSIGOB.DescomprimirArchivoZLIB(docName + ".zlib");
+            System.IO.File.Move(Archivodescomprimido, docName + "-" + conteo.ToString() + new System.IO.FileInfo(Archivodescomprimido).Extension); //
+            System.IO.File.Delete(docName + ".zlib");
+            conteo++;
+
+        }
+
     }
 }

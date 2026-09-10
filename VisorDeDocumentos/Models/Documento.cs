@@ -2,6 +2,6 @@
 {
     public class Documento
     {
-        public string Codigo { get; set; }
+        public int Codigo { get; set; }
     }
 }
