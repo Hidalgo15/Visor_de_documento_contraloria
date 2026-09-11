@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Emmanuel Perez\\Documents\\Trabajo Pasantia\\Visor de documentos\\VisorDeDocumentos\\VisorDeDocumentos\\VisorDeDocumentos.csproj": {}
+    "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Emmanuel Perez\\Documents\\Trabajo Pasantia\\Visor de documentos\\VisorDeDocumentos\\VisorDeDocumentos\\VisorDeDocumentos.csproj": {
+    "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Emmanuel Perez\\Documents\\Trabajo Pasantia\\Visor de documentos\\VisorDeDocumentos\\VisorDeDocumentos\\VisorDeDocumentos.csproj",
+        "projectUniqueName": "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj",
         "projectName": "VisorDeDocumentos",
-        "projectPath": "C:\\Users\\Emmanuel Perez\\Documents\\Trabajo Pasantia\\Visor de documentos\\VisorDeDocumentos\\VisorDeDocumentos\\VisorDeDocumentos.csproj",
-        "packagesPath": "C:\\Users\\Emmanuel Perez\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Emmanuel Perez\\Documents\\Trabajo Pasantia\\Visor de documentos\\VisorDeDocumentos\\VisorDeDocumentos\\obj\\",
+        "projectPath": "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\VisorDeDocumentos.csproj",
+        "packagesPath": "C:\\Users\\pdesarrollo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\pdesarrollo\\Documents\\Proyectos Pasante\\Visor_de_documento_contraloria\\VisorDeDocumentos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Emmanuel Perez\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\pdesarrollo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -31,6 +31,7 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -45,11 +46,22 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[7.0.2, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[10.0.12, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -69,7 +81,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.316/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

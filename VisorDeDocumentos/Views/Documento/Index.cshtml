@@ -1,24 +1,25 @@
-﻿@{
+﻿@model Documento
+
+@{
     ViewData["Title"] = "Consulta";
 
-    string rawPdfUrl = ViewBag.PdfUrl as string ?? "~/pdf/Capitulo 5 Entregable.pdf";
-    string pdfUrlResolved = Url.Content(rawPdfUrl);
-
-    string noDocumento = ViewBag.NoDocumento as string ?? "CGR-2026-001";
+    // Se obtiene la URL generada por Url.Action en el controlador
+    string pdfUrl = ViewBag.PdfUrl as string ?? Url.Action("DescargarDocumento", "Documento")!;
+    string noDocumento = ViewBag.NoDocumento as string ?? "6001";
     string? error = ViewBag.Error as string;
 }
 
 <div class="row justify-content-center">
     <div class="col-lg-12">
         <div class="card card-consulta bg-white p-4">
-
+            
             @if (!string.IsNullOrEmpty(error))
             {
                 <div class="alert alert-warning border-0 text-center py-3" role="alert" style="background-color: #fcf8e3; color: #8a6d3b;">
                     @error
                 </div>
             }
-            else
+            else if (!string.IsNullOrEmpty(pdfUrl))
             {
                 <div class="alert alert-info border-0 d-flex justify-content-between align-items-center mb-3" style="background-color: #d9edf7; color: #31708f;">
                     <div>
@@ -27,9 +28,9 @@
                     <span class="badge" style="background-color: #003870;">Documento Oficial</span>
                 </div>
 
-                <!-- Visor PDF embebido -->
+                <!-- Visor PDF embebido apuntando dinámicamente a la base de datos -->
                 <div class="border rounded bg-secondary overflow-hidden" style="height: 75vh;">
-                    <iframe src="@pdfUrlResolved" width="100%" height="100%" style="border: none;">
+                    <iframe src="@pdfUrl" width="100%" height="100%" style="border: none;">
                         Su navegador no soporta la visualización de documentos en formato PDF.
                     </iframe>
                 </div>
