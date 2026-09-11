@@ -1,32 +1,84 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 using VisorDeDocumentos.Base;
 
 namespace VisorDeDocumentos.Controllers.Documento
 {
+    [Route("Documento")]
     public class DocumentoController : Controller
     {
         private readonly string _connectionString;
+        private const string nombreTb = "cbs01";
 
         public DocumentoController(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("ConexionSIGOB");
         }
 
-        [HttpGet]
-        public IActionResult DescargarDocumento(string nombreTb = "cbs01", int codigo = 1645)
+        [HttpGet("~/")]
+        [HttpGet("~/{codigo?}")]
+        [HttpGet("")]
+        [HttpGet("{codigo?}")]
+        public IActionResult Index(string? codigo)
         {
-            byte[] archivoBytes = null;
-            string nombreArchivo = $"Documento_{codigo}.zip";
+            if (string.IsNullOrEmpty(codigo))
+            {
+                ViewBag.NoDocumento = "Ninguno seleccionado";
+                ViewBag.Codigo = null;
+                ViewBag.PdfUrl = null;
+                return View();
+            }
 
+            if (int.TryParse(codigo, out int codigoInt))
+            {
+                ViewBag.NoDocumento = $"DOC-{codigoInt}";
+                ViewBag.Codigo = codigoInt;
+                ViewBag.PdfUrl = Url.Action("DescargarDocumento", "Documento", new { codigo = codigoInt });
+                return View();
+            }
+
+            return BadRequest("El código proporcionado debe ser un número entero válido.");
+        }
+
+        [HttpGet("DescargarDocumento/{codigo:int}")]
+        public IActionResult DescargarDocumento(int codigo)
+        {
+            byte[]? archivoBytes = ObtenerDocumentoDesdeBD(codigo, nombreTb);
+
+            if (archivoBytes == null || archivoBytes.Length == 0)
+            {
+                return NotFound("No se encontró el archivo comprimido en la BD.");
+            }
+
+            string rutaPdf = DescomprimirArchivo(archivoBytes, codigo);
+
+            if (string.IsNullOrEmpty(rutaPdf) || !System.IO.File.Exists(rutaPdf))
+            {
+                return NotFound("No se pudo descomprimir el archivo.");
+            }
+
+            try
+            {
+                byte[] pdfBytes = System.IO.File.ReadAllBytes(rutaPdf);
+                return File(pdfBytes, "application/pdf");
+            }
+            finally
+            {
+                if (System.IO.File.Exists(rutaPdf))
+                {
+                    System.IO.File.Delete(rutaPdf);
+                }
+            }
+        }
+
+        private byte[]? ObtenerDocumentoDesdeBD(int codigo, string nombreTb)
+        {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("[dbo].[usp_buscar_documentos_tramite_compras]", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
                     cmd.Parameters.AddWithValue("@nombre_mia", nombreTb);
                     cmd.Parameters.AddWithValue("@codigo", codigo);
 
@@ -34,55 +86,46 @@ namespace VisorDeDocumentos.Controllers.Documento
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader.Read())
+                        if (reader.Read() && reader["document"] != DBNull.Value)
                         {
-                            if (reader[0] != DBNull.Value)
-                            {
-                                archivoBytes = (byte[])reader[0];
-                            }
+                            return (byte[])reader["document"];
                         }
                     }
                 }
             }
+            return null;
+        }
 
-            if (archivoBytes == null || archivoBytes.Length == 0)
+        private string DescomprimirArchivo(byte[] archivoComprimido, int codigo)
+        {
+            string tempDir = Path.Combine(Path.GetTempPath(), "VisorDocumentos");
+            if (!Directory.Exists(tempDir))
             {
-                return NotFound("No se encontró el archivo comprimido.");
+                Directory.CreateDirectory(tempDir);
             }
 
-            return File(archivoBytes, "application/zip", nombreArchivo);
+            string rutaComprimida = Path.Combine(tempDir, $"Documento_{codigo}.zlib");
+            System.IO.File.WriteAllBytes(rutaComprimida, archivoComprimido);
+
+            try
+            {
+                string rutaDescomprimida = ZLIBSIGOB.DescomprimirArchivoZLIB(rutaComprimida);
+
+                if (System.IO.File.Exists(rutaComprimida))
+                {
+                    System.IO.File.Delete(rutaComprimida);
+                }
+
+                return rutaDescomprimida;
+            }
+            catch
+            {
+                if (System.IO.File.Exists(rutaComprimida))
+                {
+                    System.IO.File.Delete(rutaComprimida);
+                }
+                throw;
+            }
         }
-
-        //--------------------------------------------------------------
-        //Ejemplo de descompresion de archivo zlib
-        private void unificadomentostre(int codigo)
-        {
-            string tempPath = @"W:\";
-
-            //var docGrouped = db_CGR.T_DOCUMENTOS_TRE.Take(3).ToList();
-            //string[] docGrouped = db_CGR.Database.SqlQuery<string>("SELECT codigo_tramite FROM T_DOCUMENTOS_TRE GROUP BY codigo_tramite order by codigo_tramite ").ToArray();
-            //var docGrouped = db_CGR.T_DOCUMENTOS_TRE.Take(10).GroupBy(a => a.numero_libramiento).ToList();
-            //var query = people.DistinctBy(p => p.Id);
-            //foreach (var noLibramiento in docGrouped)
-            //{
-            //string currentFolder = tempPath;
-            //string ruta = docGroup.Key;
-            string currentFolder = tempPath + 56565;
-            //var nol = db_CGR.T_DOCUMENTOS_TRE.Take(15).Where(c => c.codigo_caso == d.codigo_caso).ToList();
-            System.IO.Directory.CreateDirectory(currentFolder);
-
-            //var dotre = db_CGR.v_documentos_tre.Where(c => c.codigo_tramite == noLibramiento).ToList();
-            int conteo = 1;
-
-            string noDoc = "nombre";
-            string docName = String.Format("{0}\\{1}", currentFolder, noDoc.ToString());
-            System.IO.File.WriteAllBytes(docName + ".zlib", System.IO.File.ReadAllBytes(noDoc));
-            var Archivodescomprimido = ZLIBSIGOB.DescomprimirArchivoZLIB(docName + ".zlib");
-            System.IO.File.Move(Archivodescomprimido, docName + "-" + conteo.ToString() + new System.IO.FileInfo(Archivodescomprimido).Extension); //
-            System.IO.File.Delete(docName + ".zlib");
-            conteo++;
-
-        }
-
     }
 }
