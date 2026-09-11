@@ -1,85 +1,56 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using System.IO;
 using VisorDeDocumentos.Base;
 
 namespace VisorDeDocumentos.Controllers.Documento
 {
+    [Route("Documento")]
     public class DocumentoController : Controller
     {
         private readonly string _connectionString;
+        private const string nombreTb = "cbs01";
 
         public DocumentoController(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("ConexionSIGOB");
         }
 
-        [HttpGet]
-        
-        public IActionResult Index(string? nodocumento, string nombreTb = "cbs01", int codigo = 1645)
+        [HttpGet("~/")]
+        [HttpGet("~/{codigo?}")]
+        [HttpGet("")]
+        [HttpGet("{codigo?}")]
+        public IActionResult Index(string? codigo)
         {
-            if (string.IsNullOrEmpty(nodocumento))
+            if (string.IsNullOrEmpty(codigo))
             {
-                nodocumento = "DOC-PRUEBA-001";
+                ViewBag.NoDocumento = "Ninguno seleccionado";
+                ViewBag.Codigo = null;
+                ViewBag.PdfUrl = null;
+                return View();
             }
 
-            ViewBag.NoDocumento = nodocumento;
+            if (int.TryParse(codigo, out int codigoInt))
+            {
+                ViewBag.NoDocumento = $"DOC-{codigoInt}";
+                ViewBag.Codigo = codigoInt;
+                ViewBag.PdfUrl = Url.Action("DescargarDocumento", "Documento", new { codigo = codigoInt });
+                return View();
+            }
 
-            // Apuntamos ViewBag.PdfUrl hacia el endpoint que obtiene, descomprime y retorna el PDF de la BD
-            ViewBag.PdfUrl = Url.Action("DescargarDocumento", "Documento", new { nombreTb = nombreTb, codigo = codigo });
-
-            return View();
+            return BadRequest("El código proporcionado debe ser un número entero válido.");
         }
 
-        [HttpGet]
-        public IActionResult VerPdfLocal()
+        [HttpGet("DescargarDocumento/{codigo:int}")]
+        public IActionResult DescargarDocumento(int codigo)
         {
-            string rutaAbsoluta = @"C:\Ruta\De\Tu\Archivo\documento.pdf";
-
-            if (!System.IO.File.Exists(rutaAbsoluta))
-            {
-                return NotFound("El archivo no existe en la ruta especificada.");
-            }
-
-            var stream = new FileStream(rutaAbsoluta, FileMode.Open, FileAccess.Read);
-            return File(stream, "application/pdf");
-        }
-
-        [HttpGet]
-        public IActionResult DescargarDocumento(string nombreTb = "cbs01", int codigo = 1645)
-        {
-            byte[] archivoBytes = null;
-
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("[dbo].[usp_buscar_documentos_tramite_compras]", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@nombre_mia", nombreTb);
-                    cmd.Parameters.AddWithValue("@codigo", codigo);
-
-                    conn.Open();
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            if (reader["document"] != DBNull.Value)
-                            {
-                                archivoBytes = (byte[])reader["document"];
-                            }
-                        }
-                    }
-                }
-            }
+            byte[]? archivoBytes = ObtenerDocumentoDesdeBD(codigo, nombreTb);
 
             if (archivoBytes == null || archivoBytes.Length == 0)
             {
                 return NotFound("No se encontró el archivo comprimido en la BD.");
             }
 
-            // Descomprimir usando ZLIBSIGOB
             string rutaPdf = DescomprimirArchivo(archivoBytes, codigo);
 
             if (string.IsNullOrEmpty(rutaPdf) || !System.IO.File.Exists(rutaPdf))
@@ -94,12 +65,35 @@ namespace VisorDeDocumentos.Controllers.Documento
             }
             finally
             {
-                // Limpiar archivo temporal descomprimido
                 if (System.IO.File.Exists(rutaPdf))
                 {
                     System.IO.File.Delete(rutaPdf);
                 }
             }
+        }
+
+        private byte[]? ObtenerDocumentoDesdeBD(int codigo, string nombreTb)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("[dbo].[usp_buscar_documentos_tramite_compras]", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@nombre_mia", nombreTb);
+                    cmd.Parameters.AddWithValue("@codigo", codigo);
+
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read() && reader["document"] != DBNull.Value)
+                        {
+                            return (byte[])reader["document"];
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         private string DescomprimirArchivo(byte[] archivoComprimido, int codigo)
@@ -115,7 +109,6 @@ namespace VisorDeDocumentos.Controllers.Documento
 
             try
             {
-                // Llamada a tu clase ZLIBSIGOB
                 string rutaDescomprimida = ZLIBSIGOB.DescomprimirArchivoZLIB(rutaComprimida);
 
                 if (System.IO.File.Exists(rutaComprimida))
