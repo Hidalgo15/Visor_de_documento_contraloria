@@ -1,3 +1,6 @@
+using VisorDeDocumentos.Service;
+using VisorDeDocumentos.Service.Interface;
+
 namespace VisorDeDocumentos
 {
     public class Program
@@ -8,10 +11,13 @@ namespace VisorDeDocumentos
 
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddScoped<IDocumentoService, DocumentoService>();
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
             {
+                //app.UseExceptionHandler("/");
                 app.UseExceptionHandler("/Documento/Index");
                 app.UseHsts();
             }
@@ -23,6 +29,10 @@ namespace VisorDeDocumentos
 
             app.UseAuthorization();
 
+            // Mapea los controladores basados en atributos ([Route("Documento")])
+            app.MapControllers();
+
+            // Ruta por defecto MVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Documento}/{action=Index}/{id?}");
