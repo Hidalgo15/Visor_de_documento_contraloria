@@ -3,27 +3,31 @@
 @{
     ViewData["Title"] = "Consulta";
 
-    // Se obtiene la URL generada por Url.Action en el controlador
     string pdfUrl = ViewBag.PdfUrl as string ?? Url.Action("DescargarDocumento", "Documento")!;
-    string noDocumento = ViewBag.NoDocumento as string ?? "6001";
+    string noDocumento = ViewBag.NoDocumento as string;
     string? error = ViewBag.Error as string;
 }
 
 <div class="row justify-content-center">
     <div class="col-lg-12">
         <div class="card card-consulta bg-white p-4">
-            
+
+            <!-- Indicador de documento consultado -->
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <!-- <span class="text-muted small">Número de consulta actual: <strong class="text-dark">@noDocumento</strong></span> -->
+                <span class="badge" style="background-color: #0d5493;">Certificación Contraloria</span>
+            </div>
+
             @if (!string.IsNullOrEmpty(error))
             {
-                <div class="alert alert-warning border-0 text-center py-3" role="alert" style="background-color: #fcf8e3; color: #8a6d3b;">
+                <div class="alert alert-warning border-0 text-center py-3 rounded-3" role="alert" style="background-color: #fcf8e3; color: #8a6d3b;">
                     @error
                 </div>
             }
             else if (!string.IsNullOrEmpty(pdfUrl))
             {
-             
-                <!-- Visor PDF embebido apuntando dinámicamente a la base de datos -->
-                <div class="border rounded bg-secondary overflow-hidden" style="height: 75vh;">
+                <!-- Visor PDF embebido -->
+                <div class="cgr-pdf-container overflow-hidden" style="height: 75vh;">
                     <iframe src="@pdfUrl" width="100%" height="100%" style="border: none;">
                         Su navegador no soporta la visualización de documentos en formato PDF.
                     </iframe>
