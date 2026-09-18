@@ -138,7 +138,6 @@ C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\
 C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\VisorDeDocumentos\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\VisorDeDocumentos\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\VisorDeDocumentos\obj\Debug\net8.0\swae.build.ex.cache
-C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\VisorDeDocumentos\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\VisorDeDocumentos\obj\Debug\net8.0\VisorDeD.8D014A6D.Up2Date
 C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.dll
 C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\VisorDeDocumentos\obj\Debug\net8.0\refint\VisorDeDocumentos.dll
