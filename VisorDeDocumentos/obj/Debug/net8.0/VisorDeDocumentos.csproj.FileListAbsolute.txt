@@ -189,3 +189,4 @@ C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDo
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeDocumentos.csproj.AssemblyReference.cache
 C:\Users\Emmanuel Perez\Documents\Trabajo Pasantia\Visor de documentos\VisorDeDocumentos\VisorDeDocumentos\obj\Debug\net8.0\VisorDeD.8D014A6D.Up2Date
+C:\Users\pdesarrollo\Documents\Proyectos Pasante\Visor_de_documento_contraloria\VisorDeDocumentos\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
