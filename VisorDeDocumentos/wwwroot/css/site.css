@@ -42,7 +42,7 @@ body {
 }
 .cgr-top-banner {
     background-color: #0b4f8c;
-    border-radius: 10px;
+    border-bottom: 3px solid #0a4376;
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
