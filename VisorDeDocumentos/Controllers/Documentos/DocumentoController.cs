@@ -1,26 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using VisorDeDocumentos.Base;
 using VisorDeDocumentos.Models;
 using VisorDeDocumentos.Service.Interface;
 
 namespace VisorDeDocumentos.Controllers.Documentos
 {
-    [Route("Documento")]
+    //[Route("Documento")]
     public class DocumentoController : Controller
     {
         private readonly IDocumentoService _documentoService;
         private const string NombreTabla = "cbs01";
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _turnstileSecretKey;
+        private readonly string _turnstileSiteKey;
 
-        public DocumentoController(IDocumentoService documentoService)
+        public DocumentoController(
+            IDocumentoService documentoService,
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration)
         {
             _documentoService = documentoService;
+            _httpClientFactory = httpClientFactory;
+
+            // Leer las claves configuradas en appsettings.json
+            _turnstileSiteKey = configuration["CloudflareTurnstile:SiteKey"]
+                ?? throw new InvalidOperationException("No se ha configurado 'SiteKey' en appsettings.json.");
+
+            _turnstileSecretKey = configuration["CloudflareTurnstile:SecretKey"]
+                ?? throw new InvalidOperationException("No se ha configurado 'SecretKey' en appsettings.json.");
         }
 
-        [HttpGet("~/")]
-        [HttpGet("~/{codigo?}")]
         [HttpGet("")]
         [HttpGet("{codigo?}")]
+        [HttpGet("Documento/{codigo?}")]
         public IActionResult Index(string? codigo)
         {
+            // Pasar la SiteKey a la vista mediante ViewBag
+            ViewBag.TurnstileSiteKey = _turnstileSiteKey;
             var model = new Documento();
 
             if (string.IsNullOrEmpty(codigo))
@@ -64,6 +81,35 @@ namespace VisorDeDocumentos.Controllers.Documentos
             catch (Exception)
             {
                 return NotFound("No se pudo procesar o descomprimir el archivo.");
+            }
+        }
+
+        private async Task<bool> ValidarTurnstileAsync(string token)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+
+                var values = new Dictionary<string, string>
+                {
+                    { "secret", _turnstileSecretKey },
+                    { "response", token }
+                };
+
+                var content = new FormUrlEncodedContent(values);
+                var response = await client.PostAsync("https://challenges.cloudflare.com/turnstile/v0/siteverify", content);
+
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                var jsonString = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<TurnstileResponse>(jsonString);
+
+                return result?.Success ?? false;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }
