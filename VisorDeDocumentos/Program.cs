@@ -10,6 +10,8 @@ namespace VisorDeDocumentos
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
+            // REGISTRAR IHttpClientFactory AQUÍ
+            builder.Services.AddHttpClient();
 
             builder.Services.AddScoped<IDocumentoService, DocumentoService>();
 
